@@ -49,7 +49,7 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
       - SYSADMIN_EMAIL=${SYSADMIN_EMAIL}
-      - HTTPS_PORT=${HTTPS_PORT:-443}
+      - HTTPS_PORT=${UPSTREAM_HTTPS_PORT:-443}
       - NODE_OPTIONS=${SERVICE_NODE_OPTIONS:-}
       - DB_HOST=${DB_HOST:-postgres14}
       - DB_USER=${DB_USER:-odk}
@@ -132,7 +132,7 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
       - SUPPORT_EMAIL=${SYSADMIN_EMAIL}
-      - HTTPS_PORT=${HTTPS_PORT:-443}
+      - HTTPS_PORT=${UPSTREAM_HTTPS_PORT:-443}
   enketo_redis_main:
     image: redis:7.4.2
     volumes:
