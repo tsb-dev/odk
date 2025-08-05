@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: odk
       POSTGRES_DB: odk
     restart: always
+    networks:
+      - dokploy-network
   postgres:
     # This service upgrades from postgres 9.6 to 14.
     # The legacy name must be maintained to allow access to the anonymous volume.
@@ -25,6 +27,8 @@ services:
       POSTGRES_INITDB_ARGS: -U odk
       POSTGRES_PASSWORD: odk
       POSTGRES_DB: odk
+    networks:
+      - dokploy-network
   mail:
     image: "ixdotai/smtp:v0.5.4"
     volumes:
@@ -33,6 +37,8 @@ services:
       - MAILNAME=${DOMAIN}
       - DKIM_KEY_PATH=/etc/exim4/dkim.key.temp
     restart: always
+    networks:
+      - dokploy-network
   service:
     build:
       context: .
@@ -79,6 +85,8 @@ services:
     restart: always
     logging:
       driver: local
+    networks:
+      - dokploy-network
   nginx:
     build:
       context: .
@@ -108,9 +116,13 @@ services:
       driver: local
       options:
         max-file: "30"
+    networks:
+      - dokploy-network
   pyxform:
     image: 'ghcr.io/getodk/pyxform-http:v3.1.0'
     restart: always
+    networks:
+      - dokploy-network
   secrets:
     volumes:
       - secrets:/etc/secrets
@@ -118,6 +130,8 @@ services:
       context: .
       dockerfile: secrets.dockerfile
     command: './generate-secrets.sh'
+    networks:
+      - dokploy-network
   enketo:
     volumes:
       - secrets:/etc/secrets
@@ -133,6 +147,8 @@ services:
       - DOMAIN=${DOMAIN}
       - SUPPORT_EMAIL=${SYSADMIN_EMAIL}
       - HTTPS_PORT=${UPSTREAM_HTTPS_PORT:-443}
+    networks:
+      - dokploy-network
   enketo_redis_main:
     image: redis:7.4.2
     volumes:
@@ -142,6 +158,8 @@ services:
       - redis-server
       - /usr/local/etc/redis/redis.conf
     restart: always
+    networks:
+      - dokploy-network
   enketo_redis_cache:
     image: redis:7.4.2
     volumes:
@@ -151,9 +169,21 @@ services:
       - redis-server
       - /usr/local/etc/redis/redis.conf
     restart: always
+    networks:
+      - dokploy-network
+      
 volumes:
   secrets:
   transfer:
   postgres14:
   enketo_redis_main:
   enketo_redis_cache:
+  
+networks:
+  dokploy-network:
+    external: true
+
+
+
+
+
